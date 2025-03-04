@@ -1,0 +1,50 @@
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+import time
+
+# Set up the WebDriver
+chrome_driver_path = "path/to/chromedriver"  # Update this with your local path
+driver = webdriver.Chrome(executable_path=chrome_driver_path)
+
+driver.get("http://localhost:5500/todo.html")  # Update with actual URL if deployed
+
+time.sleep(2)  # Allow page to load
+
+# Test Case 1: Add a new task
+task_input = driver.find_element("id", "taskInput")
+task_input.send_keys("Complete Selenium Testing")
+task_input.send_keys(Keys.RETURN)
+time.sleep(1)
+
+# Validate that task was added
+try:
+    task_added = driver.find_element("xpath", "//li[contains(text(), 'Complete Selenium Testing')]")
+    print("Test Case 1 Passed: Task added successfully")
+except:
+    print("Test Case 1 Failed: Task not found")
+
+# Test Case 2: Mark task as completed
+completed_checkbox = driver.find_element("xpath", "//li[contains(text(), 'Complete Selenium Testing')]/input[@type='checkbox']")
+completed_checkbox.click()
+time.sleep(1)
+
+# Validate completion
+if completed_checkbox.is_selected():
+    print("Test Case 2 Passed: Task marked as completed")
+else:
+    print("Test Case 2 Failed: Task not marked as completed")
+
+# Test Case 3: Delete a task
+delete_button = driver.find_element("xpath", "//li[contains(text(), 'Complete Selenium Testing')]/button")
+delete_button.click()
+time.sleep(1)
+
+# Validate deletion
+try:
+    driver.find_element("xpath", "//li[contains(text(), 'Complete Selenium Testing')]")
+    print("Test Case 3 Failed: Task not deleted")
+except:
+    print("Test Case 3 Passed: Task deleted successfully")
+
+# Close the browser
+driver.quit()
